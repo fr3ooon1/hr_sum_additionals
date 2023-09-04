@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include hr_sum_additionals *.css
+recursive-include hr_sum_additionals *.csv
+recursive-include hr_sum_additionals *.html
+recursive-include hr_sum_additionals *.ico
+recursive-include hr_sum_additionals *.js
+recursive-include hr_sum_additionals *.json
+recursive-include hr_sum_additionals *.md
+recursive-include hr_sum_additionals *.png
+recursive-include hr_sum_additionals *.py
+recursive-include hr_sum_additionals *.svg
+recursive-include hr_sum_additionals *.txt
+recursive-exclude hr_sum_additionals *.pyc
