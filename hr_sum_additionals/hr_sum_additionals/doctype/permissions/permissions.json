@@ -1,0 +1,258 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "naming_series",
+ "creation": "2023-10-08 10:14:38.717905",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_1",
+  "employee",
+  "employee_name",
+  "department",
+  "shift_type",
+  "different",
+  "designation",
+  "branch",
+  "employment_type",
+  "employee_grade",
+  "column_break_5",
+  "test",
+  "permission_type",
+  "select",
+  "salary_component",
+  "date",
+  "from_time",
+  "to_time",
+  "section_break_10",
+  "reason",
+  "section_break_11",
+  "company",
+  "approver",
+  "status",
+  "valuee",
+  "valueee",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "permission_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Permission Type",
+   "options": "permission type components",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.permission_type == 'Work in holidays' || doc.permission_type == 'Shift Request' || doc.permission_type == 'over time'",
+   "fieldname": "select",
+   "fieldtype": "Select",
+   "label": "Select",
+   "options": "\nAdditional Salary\nNew Day Leave"
+  },
+  {
+   "fetch_from": "permission_type.salary_component",
+   "fieldname": "salary_component",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "salary component",
+   "read_only": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "depends_on": "permission_type",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "depends_on": "permission_type",
+   "fieldname": "from_time",
+   "fieldtype": "Datetime",
+   "label": "From Time"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "depends_on": "permission_type",
+   "fieldname": "to_time",
+   "fieldtype": "Datetime",
+   "label": "To Time "
+  },
+  {
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break"
+  },
+  {
+   "description": "Write a brief reason for what you are asking for",
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "label": "Reason",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "Al Quds For Plastic",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1,
+   "remember_last_selected_value": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.shift_request_approver",
+   "fetch_if_empty": 1,
+   "fieldname": "approver",
+   "fieldtype": "Link",
+   "label": "Approver",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nDraft\nApproved\nRejected",
+   "permlevel": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "valuee",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "valuee"
+  },
+  {
+   "fieldname": "valueee",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "valueee"
+  },
+  {
+   "fieldname": "test",
+   "fieldtype": "Button",
+   "label": "test"
+  },
+  {
+   "fetch_from": "employee.default_shift",
+   "fieldname": "shift_type",
+   "fieldtype": "Data",
+   "label": "Shift Type"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Permissions",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "different",
+   "fieldtype": "Float",
+   "label": "Different "
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation",
+   "options": "Designation"
+  },
+  {
+   "fetch_from": "employee.branch",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fetch_from": "employee.employment_type",
+   "fieldname": "employment_type",
+   "fieldtype": "Link",
+   "label": "Employment Type",
+   "options": "Employment Type"
+  },
+  {
+   "fetch_from": "employee.grade",
+   "fieldname": "employee_grade",
+   "fieldtype": "Link",
+   "label": "Employee Grade",
+   "options": "Employee Grade"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-10-12 09:28:03.896610",
+ "modified_by": "Administrator",
+ "module": "Hr Sum Additionals",
+ "name": "Permissions",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "employee_name",
+ "track_changes": 1
+}

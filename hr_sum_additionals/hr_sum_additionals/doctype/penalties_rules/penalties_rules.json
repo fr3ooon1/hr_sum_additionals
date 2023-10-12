@@ -1,0 +1,221 @@
+{
+ "actions": [],
+ "creation": "2023-10-05 18:13:21.496128",
+ "default_view": "List",
+ "description": "penalty_type",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "enable",
+  "salary_effects",
+  "section_break_2",
+  "departement",
+  "column_break_3",
+  "designation",
+  "column_break_6",
+  "employee_grade",
+  "column_break_8",
+  "branch",
+  "column_break_10",
+  "employment_type",
+  "section_break_11",
+  "related_perimmision_type",
+  "permission_type",
+  "leave_type",
+  "status",
+  "section_break_6",
+  "is_repeated",
+  "calculation_way",
+  "calculation_method",
+  "fixed_amount_value",
+  "rate",
+  "field_name",
+  "condition_rules",
+  "penalties_settings_data",
+  "reptead_every",
+  "penalties_data"
+ ],
+ "fields": [
+  {
+   "fieldname": "salary_effects",
+   "fieldtype": "Link",
+   "label": "Salary Effects",
+   "options": "Salary Component"
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "departement",
+   "fieldtype": "Link",
+   "label": "Departement",
+   "options": "Department"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation",
+   "options": "Designation"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee_grade",
+   "fieldtype": "Link",
+   "label": "Employee Grade",
+   "options": "Employee Grade"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "related_perimmision_type",
+   "fieldtype": "Link",
+   "label": "Based On",
+   "options": "DocType"
+  },
+  {
+   "depends_on": "eval:doc.related_perimmision_type==\"Permission\"",
+   "fieldname": "permission_type",
+   "fieldtype": "Link",
+   "label": "Permission Type",
+   "options": "permission type components"
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "calculation_method",
+   "fieldtype": "Select",
+   "label": "Calculation Method",
+   "options": "\nFixed Amount\nValue On A specific Field"
+  },
+  {
+   "fieldname": "fixed_amount_value",
+   "fieldtype": "Data",
+   "label": "Fixed Amount Value"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Data",
+   "label": "Rate"
+  },
+  {
+   "fieldname": "field_name",
+   "fieldtype": "Data",
+   "label": "Field Name"
+  },
+  {
+   "fieldname": "condition_rules",
+   "fieldtype": "Table",
+   "label": "Condition Rules",
+   "options": "Condition Rules"
+  },
+  {
+   "fieldname": "penalties_settings_data",
+   "fieldtype": "Heading",
+   "label": "Penalties Settings Data"
+  },
+  {
+   "fieldname": "reptead_every",
+   "fieldtype": "Select",
+   "label": "Stop Reapeting Every",
+   "options": "\nMonth\nQuarter\nYear\nNEVER"
+  },
+  {
+   "fieldname": "penalties_data",
+   "fieldtype": "Table",
+   "label": "Penalties Data",
+   "options": "Penalties Data"
+  },
+  {
+   "depends_on": "eval:doc.related_perimmision_type ==='Permissions'",
+   "fieldname": "leave_type",
+   "fieldtype": "Link",
+   "label": "Leave Type",
+   "options": "Leave Type"
+  },
+  {
+   "depends_on": "eval:doc.related_perimmision_type ==='Attendance'",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nAbsent\nPresent"
+  },
+  {
+   "fieldname": "calculation_way",
+   "fieldtype": "Select",
+   "label": "Calculation Way",
+   "options": "\nsimple\nhas level"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_repeated",
+   "fieldtype": "Check",
+   "label": "is repeated"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable",
+   "fieldtype": "Check",
+   "label": "Enable"
+  },
+  {
+   "fieldname": "employment_type",
+   "fieldtype": "Link",
+   "label": "Employment Type",
+   "options": "Employment Type"
+  }
+ ],
+ "links": [],
+ "modified": "2023-10-12 15:04:22.767279",
+ "modified_by": "Administrator",
+ "module": "Hr Sum Additionals",
+ "name": "Penalties Rules",
+ "name_case": "Title Case",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "show_name_in_global_search": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -1,0 +1,51 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2023-10-05 18:11:52.606719",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "from",
+  "to",
+  "value",
+  "rate"
+ ],
+ "fields": [
+  {
+   "fieldname": "from",
+   "fieldtype": "Float",
+   "label": "From"
+  },
+  {
+   "fieldname": "to",
+   "fieldtype": "Float",
+   "label": "To"
+  },
+  {
+   "fieldname": "value",
+   "fieldtype": "Float",
+   "label": "Value"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Rate"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-10-11 13:31:56.119937",
+ "modified_by": "Administrator",
+ "module": "Hr Sum Additionals",
+ "name": "Condition Rules",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
