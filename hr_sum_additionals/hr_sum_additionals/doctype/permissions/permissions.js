@@ -1,47 +1,30 @@
-// if (frm.doc.workflow_state === 'Approved') {
-
-//mina is here
-
 frappe.ui.form.on('Permissions', {
 	test(frm){
-		
 		frappe.call({
             method: 'frappe.client.get',
             args: {
                 doctype: 'Penalties Rules',
-                filters: {
+                filters: 
+				{
 					related_perimmision_type: 'Permission', 
-					// departement: frm.doc.department || '',
-					// permission_type: frm.doc.permission_type ,
-					// designation: frm.doc.designation,
-					// employee_grade: frm.doc.employee_grade,
-					// branch: frm.doc.branch,
-					// employment_type: frm.doc.employment_type,
-				},
+					departement: frm.doc.department || '',
+					permission_type: frm.doc.permission_type ,
+					designation: frm.doc.designation,
+					employee_grade: frm.doc.employee_grade,
+					branch: frm.doc.branch,
+					employment_type: frm.doc.employment_type,
+				}
+				,
             },
             callback: function (r) {
                 if (r.message) {
 					let employee = frm.doc.employee;
-					frappe.call({
-						method:'frappe.client.get',
-						args:{
-							doctype: 'Employee',
-							filters: {
-							name: employee
-						},
-					},callback: function(r){
-						const temp = r.message ;
-						
-					}
-				});
-					
                     let fr3on = r.message;
 					let enable = fr3on.enable;
                     let rate = fr3on.rate;
 					let salary_effects = fr3on.salary_effects;
 					let fixed_amount_value = fr3on.fixed_amount_value;
 					let calculation_method = fr3on.calculation_method;
-					// let employee = frm.doc.employee;
 					let date = frm.doc.date;
 					let leave_type = fr3on.leave_type;
 					var dt1 = new Date(frm.doc.from_time);
@@ -66,10 +49,14 @@ frappe.ui.form.on('Permissions', {
 								filters: {
 									employee: frm.doc.employee,
 									salary_component: salary_effects,
+									
 								},
 							},
 							callback: function(r){
 								const temp = r.message;
+								// let d = frm.doc.date;
+								// let date = d.getDate();
+								// console.log(date);
 								var temp2 = temp.length;
 								var memo = temp2 +1;
 								if (calculation_way === 'simple'){
@@ -243,3 +230,10 @@ function diff_hours(dt2, dt1)
   diff /= (60 * 60);
   return Math.abs(diff);
  }
+
+ function isQuarterFinished() {
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    return currentMonth === 2 || currentMonth === 5 || currentMonth === 8 || currentMonth === 11;
+}
+
