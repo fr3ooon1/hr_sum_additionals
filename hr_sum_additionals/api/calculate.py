@@ -83,6 +83,57 @@ def calc(employee='', start_date='', end_date='',salary_component='',status=''):
 
     return data
 
+
+@frappe.whitelist()
+def getPenaltiesRule(related_perimmision_type = None , departement = None , permission_type = None , designation= None, employee_grade= None , branch = None , employment_type = None):
+    filters = []
+    if related_perimmision_type:
+        filters.append(('related_perimmision_type', '=', 'Permission'))
+    
+    elif departement:
+        filters.append(('departement', '=', departement))
+    
+    elif permission_type:
+        filters.append(('permission_type', '=', permission_type))
+
+    elif designation:
+        filters.append(('designation', '=', designation))
+    
+    elif employee_grade:
+        filters.append(('employee_grade', '=', employee_grade))
+
+    elif branch:
+        filters.append(('branch', '=', branch))
+
+    elif employment_type:
+        filters.append(('employment_type', '=', employment_type))
+    
+
+
+    data = frappe.get_all(
+        "Penalties Rules",
+        filters=filters,
+        fields = ["name" , "enable" , "rate" , "salary_effects" , "calculation_method" , "fixed_amount_value" , "leave_type" , "related_perimmision_type" , "is_repeated" ,"calculation_way" ]
+
+    )
+    for field in data :
+        penalty_data = frappe.get_all("Penalties Data",filters={"parent":field["name"]},fields=["leave_allocation","effected_salaries","calculation_method","fixed_amount_value","rate","field_name","leave_type","days"])
+        field["penalties_data"] = penalty_data
+
+    for temp in data :
+        condition_rules = frappe.get_all("Condition Rules",filters={"parent":temp["name"]},fields=["from","to","value","rate"])
+        temp["condition_rules"] = condition_rules
+    
+    return data
+    
+
+
+
+
+
+
+
+
 # @frappe.whitelist()
 # def calc():
 #     data = frappe.db.sql(""" SELECT

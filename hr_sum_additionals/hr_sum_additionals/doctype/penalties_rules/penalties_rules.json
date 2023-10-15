@@ -24,6 +24,7 @@
   "related_perimmision_type",
   "permission_type",
   "leave_type",
+  "leaves_day",
   "status",
   "section_break_6",
   "is_repeated",
@@ -154,7 +155,7 @@
    "options": "Penalties Data"
   },
   {
-   "depends_on": "eval:doc.related_perimmision_type ==='Permissions'",
+   "depends_on": "eval:doc.related_perimmision_type ==='Permission'",
    "fieldname": "leave_type",
    "fieldtype": "Link",
    "label": "Leave Type",
@@ -190,10 +191,16 @@
    "fieldtype": "Link",
    "label": "Employment Type",
    "options": "Employment Type"
+  },
+  {
+   "depends_on": "eval:doc.related_perimmision_type ==='Permission'",
+   "fieldname": "leaves_day",
+   "fieldtype": "Float",
+   "label": "Leaves Day"
   }
  ],
  "links": [],
- "modified": "2023-10-12 15:04:22.767279",
+ "modified": "2023-10-15 15:26:52.543215",
  "modified_by": "Administrator",
  "module": "Hr Sum Additionals",
  "name": "Penalties Rules",

@@ -1,44 +1,46 @@
 frappe.ui.form.on('Permissions', {
 	test(frm){
 		frappe.call({
-            method: 'frappe.client.get',
+            method: 'hr_sum_additionals.api.calculate.getPenaltiesRule',
             args: {
-                doctype: 'Penalties Rules',
-                filters: 
-				{
-					related_perimmision_type: 'Permission', 
-					departement: frm.doc.department || '',
-					permission_type: frm.doc.permission_type ,
-					designation: frm.doc.designation,
-					employee_grade: frm.doc.employee_grade,
-					branch: frm.doc.branch,
-					employment_type: frm.doc.employment_type,
-				}
-				,
+                related_perimmision_type: 'Permission', 
+				departement: frm.doc.department,
+				permission_type: frm.doc.permission_type ,
+				designation: frm.doc.designation,
+				employee_grade: frm.doc.employee_grade,
+				branch: frm.doc.branch,
+				employment_type: frm.doc.employment_type,
             },
             callback: function (r) {
-                if (r.message) {
+                if (r) {
 					let employee = frm.doc.employee;
-                    let fr3on = r.message;
-					let enable = fr3on.enable;
-                    let rate = fr3on.rate;
-					let salary_effects = fr3on.salary_effects;
-					let fixed_amount_value = fr3on.fixed_amount_value;
-					let calculation_method = fr3on.calculation_method;
+                    const fr3on2 = r.message;
+					const fr3on = fr3on2[0];
+					const enable = fr3on['enable'];
+                    let rate = fr3on['rate'];
+					let salary_effects = fr3on['salary_effects'];
+					let fixed_amount_value = fr3on['fixed_amount_value'];
+					// console.log(fixed_amount_value);
+					let calculation_method = fr3on['calculation_method'];
+					console.log(calculation_method);
 					let date = frm.doc.date;
-					let leave_type = fr3on.leave_type;
+					let leave_type = fr3on['leave_type'];
+					let leaves_day = fr3on['leaves_day'];
 					var dt1 = new Date(frm.doc.from_time);
 					var dt2 = new Date(frm.doc.to_time);
 					let defTime = diff_hours(dt1 , dt2);
-					let related_perimmision_type = fr3on.related_perimmision_type;
-					let name_of_rule = fr3on.name;
+					let related_perimmision_type = fr3on['related_perimmision_type'];
+					let name_of_rule = fr3on['name'];
 					let ref_docname = frm.doc.name;
-					let calculation_way = fr3on.calculation_way;
-					let is_repeated = fr3on.is_repeated;
+					let calculation_way = fr3on['calculation_way'];
+					console.log(calculation_way);
+					let is_repeated = fr3on['is_repeated'];
 					frm.set_value('different',defTime );
 					frm.refresh_field('different');
-					const condition_rules = fr3on.condition_rules ;
-					const penalties_data = fr3on.penalties_data;
+					const condition_rules = fr3on['condition_rules'] ;
+					const penalties_data = fr3on['penalties_data'];
+					console.log(penalties_data);
+					console.log(condition_rules);
 					let amount = 0;
 					if (enable ==1){
 					if(is_repeated == 1){
@@ -54,9 +56,6 @@ frappe.ui.form.on('Permissions', {
 							},
 							callback: function(r){
 								const temp = r.message;
-								// let d = frm.doc.date;
-								// let date = d.getDate();
-								// console.log(date);
 								var temp2 = temp.length;
 								var memo = temp2 +1;
 								if (calculation_way === 'simple'){
@@ -77,7 +76,7 @@ frappe.ui.form.on('Permissions', {
 						
 						if (frm.doc.permission_type === 'over time' || frm.doc.permission_type === 'Work in Holidays' || frm.doc.permission_type === 'Shift Request' ) {
 							if (frm.doc.select === 'New Day Leave'){
-								updateLeaveAllocation(employee , leave_type);
+								updateLeaveAllocation(employee , leave_type , leaves_day);
 						}
 							else if(frm.doc.select === 'Additional Salary' ){
 								createAdditionalSalary(employee , salary_effects , amount , date , name_of_rule , related_perimmision_type ,ref_docname );								
@@ -117,6 +116,7 @@ frappe.ui.form.on('Permissions', {
 					} else if (calculation_way === 'simple'){
 						if(calculation_method === 'Fixed Amount'){
 							amount = fixed_amount_value ;
+							console.log(amount);
 						} else if (calculation_method === 'Value On A specific Field'){
 							amount = defTime * rate ;
 						}
@@ -126,14 +126,14 @@ frappe.ui.form.on('Permissions', {
 						
 					if (frm.doc.permission_type === 'over time' || frm.doc.permission_type === 'Work in Holidays' || frm.doc.permission_type === 'Shift Request' ) {
 						if (frm.doc.select === 'New Day Leave'){
-							updateLeaveAllocation(employee , leave_type);
+							updateLeaveAllocation(employee , leave_type , leaves_day);
 					}
 						else if(frm.doc.select === 'Additional Salary' ){
 							createAdditionalSalary(employee , salary_effects , amount , date , name_of_rule , related_perimmision_type ,ref_docname );								
 						}
 					}				
 				
-					else if (frm.doc.permission_type === 'Exit Early' || frm.doc.permission_type === 'Late Enter' ) {
+					else if (frm.doc.permission_type === 'Exit Early' || frm.doc.permission_type === 'Late Enter' || frm.doc.permission_type === 'Missions') {
 						createAdditionalSalary(employee , salary_effects , amount , date , name_of_rule,related_perimmision_type , ref_docname) ;
 					
 				}
@@ -162,10 +162,13 @@ function createAdditionalSalary(employee , salary_effects , rate , payroll_date 
 	log.ref_doctype = related_perimmision_type;
 	log.name_of_rule = name_of_rule ;
     frappe.db.insert(log);
-	frappe.msgprint("Created");
+	frappe.msgprint("Created");	
+	frappe.msgprint(rate);
+
+
 }
 
-function updateLeaveAllocation (employee , leave_type){
+function updateLeaveAllocation (employee , leave_type , leaves_day){
     
 	frappe.call({
 	  'method': 'frappe.client.get_value',
@@ -181,7 +184,7 @@ function updateLeaveAllocation (employee , leave_type){
 	  callback: function(r) {
 		  
 		  let temp = r.message.new_leaves_allocated;
-		  temp = temp+1 ;
+		  temp = temp + leaves_day ;
 		  
 		  updateQualityProfile(temp , employee , leave_type); 
 
