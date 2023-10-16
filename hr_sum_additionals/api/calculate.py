@@ -3,44 +3,6 @@ import frappe
 from sap.qr_generator import get_qr
 from multiprocessing import Process, Queue
 
-@frappe.whitelist()
-# def calc(employee = '' , start_date ='' , end_date =''):
-
-#     """
-#     return a list of dicts of Employee Effects(child table), filtured on the 
-#     function input, if there wasn't any input the function return all waiting Quality
-#     items without filter
-    
-#     employee = Employee Effects employee
-#     start_date = the creation date of Product Order Details created on or after the start_date
-#     end_date = the creation date of Product Order Details created on or before the end_date    
-#     """
-
-
-#     query = """  SELECT
-#         `employee` AS `employee` ,
-#        `employee_name` AS `employee_name`,
-#         SUM(`amount`) AS `amount`,
-#         `salary_component` AS `component`
-#         FROM
-#         `tabEffected salaries`  
-#         GROUP BY
-#        `employee` , `employee_name` , `salary_component` """
-    
-#     if employee:
-#         query += f" AND employee='{employee}'"
-
-#     if start_date:
-#         query += f" AND creation>='{start_date}'"
-
-#     if end_date:
-#         end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d")
-#         end_date += datetime.timedelta(days=1)
-#         query += f" AND creation<='{end_date}' "
-
-#     data = frappe.db.sql(query , as_dict=1)
-#     return data
-
 
 
 def calc(employee='', start_date='', end_date='',salary_component='',status=''):
@@ -113,7 +75,7 @@ def getPenaltiesRule(related_perimmision_type = None , departement = None , perm
     data = frappe.get_all(
         "Penalties Rules",
         filters=filters,
-        fields = ["name" , "enable" , "rate" , "salary_effects" , "calculation_method" , "fixed_amount_value" , "leave_type" , "related_perimmision_type" , "is_repeated" ,"calculation_way" ]
+        fields = ["name" , "enable" , "rate" , "salary_effects" , "calculation_method" , "fixed_amount_value" , "leave_type" , "related_perimmision_type" , "is_repeated" ,"calculation_way" , "reptead_every" ]
 
     )
     for field in data :
@@ -127,25 +89,67 @@ def getPenaltiesRule(related_perimmision_type = None , departement = None , perm
     return data
     
 
+@frappe.whitelist()
+def getHistoryPenaltiesDataMonthly(employee='', salary_component=''):
+    data = frappe.db.sql("""
+        SELECT
+            `employee` AS `employee`,
+            `salary_component` AS `component`
+        FROM
+            `tabEffected salaries`
+        WHERE
+            `salary_component` = %s
+            AND `employee` = %s
+            AND MONTH(`payroll_date`) = MONTH(CURRENT_DATE())
+            AND YEAR(`payroll_date`) = YEAR(CURRENT_DATE())
+     """, (salary_component, employee), as_dict=1)
 
+    return data
 
+@frappe.whitelist()
+def getHistoryPenaltiesDataYearly(employee='', salary_component=''):
+    data = frappe.db.sql("""
+        SELECT
+            `employee` AS `employee`,
+            `salary_component` AS `component`
+        FROM
+            `tabEffected salaries`
+        WHERE
+            `salary_component` = %s
+            AND `employee` = %s
+            AND YEAR(`payroll_date`) = YEAR(CURRENT_DATE())
+     """, (salary_component, employee), as_dict=1)
 
+    return data
 
+@frappe.whitelist()
+def getHistoryPenaltiesDataQuarterly(employee='', salary_component=''):
+    data = frappe.db.sql("""
+        SELECT
+            `employee` AS `employee`,
+            `salary_component` AS `component`
+        FROM
+            `tabEffected salaries`
+        WHERE
+            `salary_component` = %s
+            AND `employee` = %s
+            AND QUARTER(`payroll_date`) = QUARTER(CURRENT_DATE())
+            AND YEAR(`payroll_date`) = YEAR(CURRENT_DATE())
+     """, (salary_component, employee), as_dict=1)
 
+    return data
 
+@frappe.whitelist()
+def getHistoryPenaltiesDataALL(employee='', salary_component=''):
+    data = frappe.db.sql("""
+        SELECT
+            `employee` AS `employee`,
+            `salary_component` AS `component`
+        FROM
+            `tabEffected salaries`
+        WHERE
+            `salary_component` = %s
+            AND `employee` = %s
+     """, (salary_component, employee), as_dict=1)
 
-# @frappe.whitelist()
-# def calc():
-#     data = frappe.db.sql(""" SELECT
-#        `employee` AS `employee`,
-#         SUM(`amount`) AS `amount`,
-#         `salary_component` AS `component`
-#         FROM
-#         `tabEffected salaries`
-#         WHERE
-#          MONTH(`payroll_date`) = MONTH(CURRENT_DATE())
-#          AND YEAR(`payroll_date`) = YEAR(CURRENT_DATE())     
-#         GROUP BY
-#        `employee` , `salary_component`
-#      """, as_dict=1)
-#     return data
+    return data

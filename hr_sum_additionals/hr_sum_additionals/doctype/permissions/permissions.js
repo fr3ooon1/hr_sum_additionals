@@ -33,6 +33,7 @@ frappe.ui.form.on('Permissions', {
 					let name_of_rule = fr3on['name'];
 					let ref_docname = frm.doc.name;
 					let calculation_way = fr3on['calculation_way'];
+					let reptead_every = fr3on['reptead_every'];
 					console.log(calculation_way);
 					let is_repeated = fr3on['is_repeated'];
 					frm.set_value('different',defTime );
@@ -44,19 +45,17 @@ frappe.ui.form.on('Permissions', {
 					let amount = 0;
 					if (enable ==1){
 					if(is_repeated == 1){
-						frappe.call({
-							method:'frappe.client.get_list',
-							args:{
-								doctype:'Effected salaries',
-								filters: {
-									employee: frm.doc.employee,
+						if(reptead_every === 'Month'){
+							frappe.call({
+								method: 'hr_sum_additionals.api.calculate.getHistoryPenaltiesDataMonthly',
+								args: {
+									employee: frm.doc.employee, 
 									salary_component: salary_effects,
-									
 								},
-							},
-							callback: function(r){
-								const temp = r.message;
-								var temp2 = temp.length;
+								callback: function (r) {
+									if (r) {
+										const temp = r.message;
+										var temp2 = temp.length;
 								var memo = temp2 +1;
 								if (calculation_way === 'simple'){
 									for (let i = 0; i < penalties_data.length; i++) {
@@ -73,24 +72,104 @@ frappe.ui.form.on('Permissions', {
 									}
 								}	
 							}
-						
-						if (frm.doc.permission_type === 'over time' || frm.doc.permission_type === 'Work in Holidays' || frm.doc.permission_type === 'Shift Request' ) {
-							if (frm.doc.select === 'New Day Leave'){
-								updateLeaveAllocation(employee , leave_type , leaves_day);
-						}
-							else if(frm.doc.select === 'Additional Salary' ){
-								createAdditionalSalary(employee , salary_effects , amount , date , name_of_rule , related_perimmision_type ,ref_docname );								
+									}
+								}
+							});
+						} else if (reptead_every === 'Quarter'){
+							frappe.call({
+								method: 'hr_sum_additionals.api.calculate.getHistoryPenaltiesDataQuarterly',
+								args: {
+									employee: frm.doc.employee, 
+									salary_component: salary_effects,
+								},
+								callback: function (r) {
+									if (r) {
+										const temp = r.message;
+										var temp2 = temp.length;
+								var memo = temp2 +1;
+								if (calculation_way === 'simple'){
+									for (let i = 0; i < penalties_data.length; i++) {
+										const rule = penalties_data[i];
+										if(rule.calculation_method === 'Fixed Amount'){
+											if (rule.times <= memo) {
+												amount = rule.fixed_amount_value; 
+										}
+									}
+									else if (rule.calculation_method === 'Value On A specific Field'){
+										if (rule.times <= memo ) {
+											amount = rule.rate * defTime; 
+										}
+									}
+								}	
 							}
-						}				
-					
-						else if (frm.doc.permission_type === 'Exit Early' || frm.doc.permission_type === 'Late Enter' ) {
-							createAdditionalSalary(employee , salary_effects , amount , date , name_of_rule,related_perimmision_type , ref_docname) ;
+									}
+								}
+							});
+
+						} else if (reptead_every === 'Year'){
+							frappe.call({
+								method: 'hr_sum_additionals.api.calculate.getHistoryPenaltiesDataYearly',
+								args: {
+									employee: frm.doc.employee, 
+									salary_component: salary_effects,
+								},
+								callback: function (r) {
+									if (r) {
+										const temp = r.message;
+										var temp2 = temp.length;
+								var memo = temp2 +1;
+								if (calculation_way === 'simple'){
+									for (let i = 0; i < penalties_data.length; i++) {
+										const rule = penalties_data[i];
+										if(rule.calculation_method === 'Fixed Amount'){
+											if (rule.times <= memo) {
+												amount = rule.fixed_amount_value; 
+										}
+									}
+									else if (rule.calculation_method === 'Value On A specific Field'){
+										if (rule.times <= memo ) {
+											amount = rule.rate * defTime; 
+										}
+									}
+								}	
+							}
+									}
+								}
+							});
+
+						} else if (reptead_every === 'STOP'){
+							frappe.call({
+								method: 'hr_sum_additionals.api.calculate.getHistoryPenaltiesDataALL',
+								args: {
+									employee: frm.doc.employee, 
+									salary_component: salary_effects,
+								},
+								callback: function (r) {
+									if (r) {
+										const temp = r.message;
+										var temp2 = temp.length;
+								var memo = temp2 +1;
+								if (calculation_way === 'simple'){
+									for (let i = 0; i < penalties_data.length; i++) {
+										const rule = penalties_data[i];
+										if(rule.calculation_method === 'Fixed Amount'){
+											if (rule.times <= memo) {
+												amount = rule.fixed_amount_value; 
+										}
+									}
+									else if (rule.calculation_method === 'Value On A specific Field'){
+										if (rule.times <= memo ) {
+											amount = rule.rate * defTime; 
+										}
+									}
+								}	
+							}
+									}
+								}
+							});
+
+						}
 						
-					}
-								
-							}	
-							
-						});
 						
 					}	else	{
 
@@ -234,9 +313,4 @@ function diff_hours(dt2, dt1)
   return Math.abs(diff);
  }
 
- function isQuarterFinished() {
-    const today = new Date();
-    const currentMonth = today.getMonth();
-    return currentMonth === 2 || currentMonth === 5 || currentMonth === 8 || currentMonth === 11;
-}
 
