@@ -7,50 +7,10 @@
  "engine": "InnoDB",
  "field_order": [
   "times",
-  "leave_allocation",
-  "effected_salaries",
-  "calculation_method_section",
-  "calculation_method",
   "fixed_amount_value",
-  "rate",
-  "field_name",
-  "leave_details_section",
-  "leave_type",
-  "days"
+  "rate"
  ],
  "fields": [
-  {
-   "columns": 2,
-   "fieldname": "times",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Times",
-   "options": "1\n2\n3\n4",
-   "reqd": 1
-  },
-  {
-   "default": "0",
-   "fieldname": "leave_allocation",
-   "fieldtype": "Check",
-   "label": "Leave Allocation"
-  },
-  {
-   "default": "0",
-   "fieldname": "effected_salaries",
-   "fieldtype": "Check",
-   "label": "Effected Salaries"
-  },
-  {
-   "fieldname": "calculation_method_section",
-   "fieldtype": "Section Break",
-   "label": "Salary calculation Method "
-  },
-  {
-   "fieldname": "calculation_method",
-   "fieldtype": "Select",
-   "label": "Calculation Method",
-   "options": "\nFixed Amount\nValue On A specific Field"
-  },
   {
    "fieldname": "fixed_amount_value",
    "fieldtype": "Currency",
@@ -62,30 +22,14 @@
    "label": "Rate"
   },
   {
-   "fieldname": "field_name",
-   "fieldtype": "Data",
-   "label": "Field Name"
-  },
-  {
-   "fieldname": "leave_details_section",
-   "fieldtype": "Section Break",
-   "label": "Leave Details"
-  },
-  {
-   "fieldname": "leave_type",
-   "fieldtype": "Link",
-   "label": "Leave Type",
-   "options": "Leave Type"
-  },
-  {
-   "fieldname": "days",
+   "fieldname": "times",
    "fieldtype": "Float",
-   "label": "Days"
+   "label": "Times"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2023-10-05 18:13:09.028249",
+ "modified": "2023-10-17 10:28:13.385332",
  "modified_by": "Administrator",
  "module": "Hr Sum Additionals",
  "name": "Penalties Data",
