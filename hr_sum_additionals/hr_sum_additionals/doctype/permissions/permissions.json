@@ -21,6 +21,8 @@
   "employee_grade",
   "column_break_5",
   "test",
+  "test2",
+  "barcode",
   "permission_type",
   "select",
   "salary_component",
@@ -195,7 +197,7 @@
   },
   {
    "fieldname": "different",
-   "fieldtype": "Float",
+   "fieldtype": "Data",
    "label": "Different "
   },
   {
@@ -225,12 +227,22 @@
    "fieldtype": "Link",
    "label": "Employee Grade",
    "options": "Employee Grade"
+  },
+  {
+   "fieldname": "barcode",
+   "fieldtype": "Attach Image",
+   "label": "barcode"
+  },
+  {
+   "fieldname": "test2",
+   "fieldtype": "Button",
+   "label": "test2"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-12 09:28:03.896610",
+ "modified": "2023-11-22 13:04:21.212444",
  "modified_by": "Administrator",
  "module": "Hr Sum Additionals",
  "name": "Permissions",

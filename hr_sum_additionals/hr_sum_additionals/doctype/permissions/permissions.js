@@ -7,7 +7,8 @@ frappe.ui.form.on('Permissions', {
 		let to_time = frm.doc.to_time;
 		let name = frm.doc.name;
 		let get_the_rule1 = get_the_rule (employee , date , doctype , from_time , to_time , name);
-		console.log(get_the_rule1);
+		// let the_function_to_amount1 = the_function_to_amount (get_the_rule1 , employee , from_time , to_time )
+		// console.log(the_function_to_amount1);
 		frm.set_value('different', get_the_rule1);
 	}
 });

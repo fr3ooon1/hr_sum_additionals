@@ -1,17 +1,19 @@
 {
  "actions": [],
+ "allow_events_in_timeline": 1,
+ "allow_import": 1,
  "creation": "2023-10-05 18:13:21.496128",
  "default_view": "List",
- "description": "penalty_type",
  "doctype": "DocType",
  "document_type": "Document",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "overview_tab",
   "enable",
   "from_date",
+  "column_break_lzvnm",
   "to_date",
-  "salary_effects",
   "section_break_2",
   "departement",
   "column_break_3",
@@ -23,6 +25,7 @@
   "column_break_10",
   "employment_type",
   "section_break_11",
+  "salary_effects",
   "related_perimmision_type",
   "permission_type",
   "leave_type",
@@ -38,7 +41,8 @@
   "condition_rules",
   "penalties_settings_data",
   "reptead_every",
-  "penalties_data"
+  "penalties_data",
+  "connection_tab"
  ],
  "fields": [
   {
@@ -49,7 +53,8 @@
   },
   {
    "fieldname": "section_break_2",
-   "fieldtype": "Section Break"
+   "fieldtype": "Tab Break",
+   "label": "Applicable For"
   },
   {
    "fieldname": "departement",
@@ -93,7 +98,8 @@
   },
   {
    "fieldname": "section_break_11",
-   "fieldtype": "Section Break"
+   "fieldtype": "Tab Break",
+   "label": "Rule Settings"
   },
   {
    "fieldname": "related_perimmision_type",
@@ -102,7 +108,7 @@
    "options": "DocType"
   },
   {
-   "depends_on": "eval:doc.related_perimmision_type==\"Permission\"",
+   "depends_on": "eval:doc.related_perimmision_type==\"Permissions\"",
    "fieldname": "permission_type",
    "fieldtype": "Link",
    "label": "Permission Type",
@@ -209,10 +215,25 @@
    "fieldname": "to_date",
    "fieldtype": "Date",
    "label": "To Date"
+  },
+  {
+   "fieldname": "overview_tab",
+   "fieldtype": "Tab Break",
+   "label": "Overview",
+   "show_dashboard": 1
+  },
+  {
+   "fieldname": "column_break_lzvnm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "connection_tab",
+   "fieldtype": "Tab Break",
+   "label": "Connection"
   }
  ],
  "links": [],
- "modified": "2023-10-21 04:02:01.619317",
+ "modified": "2023-11-22 16:18:28.899945",
  "modified_by": "Administrator",
  "module": "Hr Sum Additionals",
  "name": "Penalties Rules",
@@ -228,6 +249,18 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
    "share": 1,
    "write": 1
   }
