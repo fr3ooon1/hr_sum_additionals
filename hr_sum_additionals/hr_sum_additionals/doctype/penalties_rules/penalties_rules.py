@@ -137,8 +137,6 @@ def the_rule_repeated(name1, def_time, penalties_month_array):
         fields=["times", "fixed_amount_value", "rate"]
     )
     penalties_month = penalties_month_array + 1
-    times = 0
-    amount = 0
     if name.calculation_way == 'simple':
         max_number = penalties_data[0]['fixed_amount_value']
         max_number1 = penalties_data[0]['rate']
@@ -146,15 +144,14 @@ def the_rule_repeated(name1, def_time, penalties_month_array):
         for rule in penalties_data:
             temp = rule['fixed_amount_value']
             temp1 = rule['rate']
-
+            times = rule['times']
             if name.calculation_method == 'Fixed Amount':
-                if penalties_month <= times:
-                    amount = rule['fixed_amount_value']
+                if penalties_month == times:
+                    max_number = rule['fixed_amount_value']
                 elif temp > max_number:
                     max_number = temp
-                    print(amount)
             elif name.calculation_method == 'Value On A specific Field':
-                if penalties_month <= times:
+                if penalties_month == times:
                     max_number = rule['rate'] * def_time
                 elif temp1 > max_number1:
                     max_number = temp1 * def_time
