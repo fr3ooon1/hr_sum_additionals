@@ -26,5 +26,5 @@ class CustomCheckin(EmployeeCheckin):
         condition = log_type_condition + " AND " +shift_condition
 
 
-        self.deduction = get_the_rule (employee , date , doctype , to_time , from_time , name , condition)
+        self.deduction = get_the_rule (employee , date , doctype , to_time , from_time , name )
 

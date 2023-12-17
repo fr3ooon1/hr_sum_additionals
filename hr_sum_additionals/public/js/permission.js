@@ -7,7 +7,7 @@ frappe.ui.form.on('Permission', {
 		let to_time = frm.doc.to_time;
 		let name = frm.doc.name;
 		let condition = "Different" ; 
-		let get_the_rule1 = get_the_rule (employee , date , doctype , from_time , to_time , name , condition);
+		let get_the_rule1 = get_the_rule (employee , date , doctype , from_time , to_time , name );
 
 
 		frm.set_value('custom_different', get_the_rule1);

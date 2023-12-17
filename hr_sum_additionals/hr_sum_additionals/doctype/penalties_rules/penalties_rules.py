@@ -21,7 +21,7 @@ def create_effected_salary(employee, salary_effects, amount, payroll_date, name_
     frappe.msgprint("Created")
 
 @frappe.whitelist()
-def get_the_rule(employee_id, date, doctype, dt2, dt1, ref_docname , condition):
+def get_the_rule(employee_id, date, doctype, dt2, dt1, ref_docname):
     employee = frappe.get_doc("Employee", employee_id)
     doc_data = frappe.get_doc(doctype, ref_docname)
  
@@ -40,7 +40,7 @@ def get_the_rule(employee_id, date, doctype, dt2, dt1, ref_docname , condition):
             'enable' : 1,
             })
     
-    
+
     for i in rules:
         rule = frappe.get_doc("Penalties Rules", i.name)
         if is_date_between(date, rule.from_date, rule.to_date):
