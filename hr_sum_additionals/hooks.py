@@ -4,7 +4,7 @@ app_name = "hr_sum_additionals"
 app_title = "Hr Sum Additionals"
 app_publisher = "1"
 app_description = "1"
-app_email = "1"
+app_email = "mohamed.essam68.me@gmail.com"
 app_license = "MIT"
 
 # Includes in <head>
@@ -12,8 +12,13 @@ app_license = "MIT"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/hr_sum_additionals/css/hr_sum_additionals.css"
-# app_include_js = "/assets/hr_sum_additionals/js/hr_sum_additionals.js"
+app_include_js = ["/assets/hr_sum_additionals/js/permission.js"]
 
+override_doctype_class = {
+	# "ToDo": "custom_app.overrides.CustomToDo"
+	"Employee Checkin": "hr_sum_additionals.hr_sum_additionals.checkin.CustomCheckin"
+
+}
 # include js, css files in header of web template
 # web_include_css = "/assets/hr_sum_additionals/css/hr_sum_additionals.css"
 # web_include_js = "/assets/hr_sum_additionals/js/hr_sum_additionals.js"
@@ -215,3 +220,9 @@ app_license = "MIT"
 # auth_hooks = [
 #	"hr_sum_additionals.auth.validate"
 # ]
+
+doc_events = {
+    "tabPermission": {
+        "onload": "hr_sum_additionals.public.permission"
+    }
+}

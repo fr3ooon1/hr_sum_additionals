@@ -11,8 +11,9 @@
  "field_order": [
   "overview_tab",
   "enable",
-  "from_date",
   "column_break_lzvnm",
+  "from_date",
+  "column_break_ortyq",
   "to_date",
   "section_break_2",
   "departement",
@@ -26,6 +27,10 @@
   "employment_type",
   "section_break_11",
   "related_perimmision_type",
+  "had_condition",
+  "condition",
+  "log_type",
+  "grievance_type",
   "permission_type",
   "status",
   "section_break_6",
@@ -103,9 +108,9 @@
    "options": "DocType"
   },
   {
-   "depends_on": "eval:doc.related_perimmision_type==\"Permissions\"",
    "fieldname": "permission_type",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Permission Type",
    "options": "permission type components"
   },
@@ -206,7 +211,7 @@
   },
   {
    "fieldname": "column_break_lzvnm",
-   "fieldtype": "Column Break"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "rule_effect_tab",
@@ -232,14 +237,45 @@
    "label": "Update Leave"
   },
   {
+   "fieldname": "log_type",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Log Type",
+   "options": "\nIN\nOUT"
+  },
+  {
+   "fieldname": "grievance_type",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Grievance Type",
+   "options": "Grievance Type"
+  },
+  {
+   "fieldname": "column_break_ortyq",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "leave_type",
    "fieldtype": "Link",
    "label": "Leave Type",
    "options": "Leave Type"
+  },
+  {
+   "description": "Hint: Write the field name in the Doctype or write the condition you would follow <br>\nEx. 1: different ( this is field name in the Permission )  \n<br>\nEx. 2: log_type == \"IN\" AND shift == \"ALL\"",
+   "fieldname": "condition",
+   "fieldtype": "Table",
+   "label": "Condition ",
+   "options": "Condition"
+  },
+  {
+   "default": "0",
+   "fieldname": "had_condition",
+   "fieldtype": "Check",
+   "label": "Had Condition"
   }
  ],
  "links": [],
- "modified": "2023-11-23 10:03:11.412467",
+ "modified": "2023-12-17 13:52:09.139789",
  "modified_by": "Administrator",
  "module": "Hr Sum Additionals",
  "name": "Penalties Rules",
