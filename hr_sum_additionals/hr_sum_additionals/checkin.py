@@ -11,32 +11,15 @@ class CustomCheckin(EmployeeCheckin):
         doctype = "Employee Checkin"
         datatime = self.time
         date = getdate(datatime)
-        time_checkIN = get_time(datatime)
         name = self.name
+
         # log_type = self.log_type
-        shift = self.shift
+        # shift = self.shift
+        # time_checkIN = get_time(datatime)
+        # shift_data = frappe.get_doc("Shift Type" , shift)
+        # datetime_obj = datetime.strptime(str(shift_data.late_penalty_after ), "%H:%M:%S")
+        # to_time = datetime_obj.time()
+        # from_time = time_checkIN
 
 
-        shift_data = frappe.get_doc("Shift Type" , shift)
-        datetime_obj = datetime.strptime(str(shift_data.late_penalty_after ), "%H:%M:%S")
-        to_time = datetime_obj.time()
-        
-        from_time = time_checkIN
-
-
-        self.deduction = get_the_rule (employee , date , doctype , to_time , from_time , name )
-
-    
-# @frappe.whitelist()
-# def dates ():
-#     shift_data = frappe.get_doc("Shift Type" , "fr3on shift")
-#     datetime_obj = datetime.strptime(str(shift_data.late_penalty_after ), "%H:%M:%S")
-#     date = datetime_obj.date()
-#     time = datetime_obj.time()
-
-#     # Do something with date and time if needed
-#     print("Date:", date)
-#     print("Time:", time)
-   
-
-
+        self.deduction = get_the_rule (employee , date , doctype ,  name )

@@ -16,7 +16,8 @@ app_include_js = ["/assets/hr_sum_additionals/js/permission.js"]
 
 override_doctype_class = {
 	# "ToDo": "custom_app.overrides.CustomToDo"
-	"Employee Checkin": "hr_sum_additionals.hr_sum_additionals.checkin.CustomCheckin"
+	"Employee Checkin": "hr_sum_additionals.hr_sum_additionals.checkin.CustomCheckin",
+    "Appraisal": "hr_sum_additionals.hr_sum_additionals.checkin.CustomAppraisal",
 
 }
 # include js, css files in header of web template

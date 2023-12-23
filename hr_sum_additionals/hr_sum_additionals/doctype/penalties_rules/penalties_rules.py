@@ -21,7 +21,7 @@ def create_effected_salary(employee, salary_effects, amount, payroll_date, name_
     frappe.msgprint("Created")
 
 @frappe.whitelist()
-def get_the_rule(employee_id, date, doctype, dt2, dt1, ref_docname):
+def get_the_rule(employee_id, date, doctype, ref_docname):
     employee = frappe.get_doc("Employee", employee_id)
     doc_data = frappe.get_doc(doctype, ref_docname)
  
@@ -50,7 +50,7 @@ def get_the_rule(employee_id, date, doctype, dt2, dt1, ref_docname):
                         if rule.employment_type == emp_employment_type or rule.employment_type is None or rule.employment_type == "":
                             if rule.employee_grade == emp_grade or rule.employee_grade is None or rule.employee_grade == "":
                                 if conditions(rule.name , doctype , ref_docname):
-                                    amount = the_function_to_amount(rule.name, employee_id, dt2, dt1)
+                                    amount = the_function_to_amount(rule.name, employee_id , doctype , ref_docname)
                                     employee_id = employee.name
                                     salary_effects = rule.salary_component
                                     rule_name = rule.name
@@ -63,11 +63,19 @@ def get_the_rule(employee_id, date, doctype, dt2, dt1, ref_docname):
                                         new_value_of_leave = float(value_of_leave) + amount
                                         frappe.db.set_value('Leave Allocation', name_of_leave, 'new_leaves_allocated', new_value_of_leave)
                                         frappe.db.set_value('Leave Allocation', name_of_leave, 'total_leaves_allocated', new_value_of_leave)
-                                        
-                                    dif_time = diff_hours(dt2,dt1)
-                                    return dif_time
+                                    return amount
 
 
+
+def is_valid_time(value):
+    try:
+        datetime.strptime(value, "%H:%M:%S")
+        return True
+    except ValueError:
+        return False
+
+
+from datetime import timedelta
 @frappe.whitelist()
 def conditions(name_of_rule, doctype, name):
     ref_data = frappe.get_doc(doctype, name)
@@ -84,6 +92,17 @@ def conditions(name_of_rule, doctype, name):
         fields=["field_name", "operator", "value"]
     )
 
+    for i in conditions:
+        value = i['value']
+        if is_valid_time(value):
+            time_object = datetime.strptime(value, "%H:%M:%S")
+            i['value'] = timedelta(
+                hours=time_object.hour,
+                minutes=time_object.minute,
+                seconds=time_object.second
+            )
+    print(conditions)
+
     second_dict = {cond['field_name']: cond for cond in conditions}
 
     for field_name, condition in all_fields.items():
@@ -91,13 +110,14 @@ def conditions(name_of_rule, doctype, name):
             condition_info = second_dict[field_name]
             operator = condition_info.get("operator")
             value = condition_info.get("value")
-            print(condition_info)
-            print(operator)
-            print(value)
 
             if operator == '==' and condition != value:
                 return False
             elif operator == '!=' and condition == value:
+                return False
+            elif operator == '<' and not condition < value:
+                return False
+            elif operator == '>' and not condition > value:
                 return False
 
     return True
@@ -110,12 +130,27 @@ def is_date_between(date_to_check, start_date, end_date):
     end_date = getdate(end_date)
     return start_date <= date_to_check <= end_date
 
+from frappe.utils import getdate , get_time
 @frappe.whitelist()
-def the_function_to_amount(name1, employee, dt2, dt1):
+def the_function_to_amount(name1, employee , doctype , ref_docname):
     try:
         amount = 0
         name = frappe.get_doc("Penalties Rules", name1)
-        def_time = float(diff_hours(dt2, dt1))
+        if doctype == "Permission":
+            doc = frappe.get_doc("Permission" , ref_docname)
+            def_time = float(diff_hours(doc.from_time, doc.to_time))
+        elif doctype == "Employee Checkin":
+            doc = frappe.get_doc("Employee Checkin" , ref_docname)
+            if doc.log_type == "IN":
+                time = doc.time
+                time_checkIN = get_time(time)
+                shift_start = doc.shift_start
+                time_shift_start = get_time(shift_start)
+                def_time = float(diff_hours(time_checkIN, time_shift_start))
+        else:
+            def_time = frappe.db.get_value(doc, ref_docname, name.field_name)
+
+            
 
         if name.is_repeated == 1:
             if name.reptead_every == 'Month':
