@@ -10,12 +10,13 @@ frappe.ui.form.on('Permission', {
 
 
 frappe.ui.form.on('Permission', {
-    after_save: function(frm) {	
-		let from_time = frm.doc.from_time ; 
-		let to_time = frm.doc.to_time ; 
-		let dif = diff_hours(from_time , to_time )
-		frm.set_value('custom_different', dif);
-		frm.refresh_field('custom_different');
+	after_workflow_action: function(frm) {
+		if (frm.doc.workflow_state === 'Approved') {		let from_time = frm.doc.from_time ; 
+			let to_time = frm.doc.to_time ; 
+			let dif = diff_hours(from_time , to_time )
+			frm.set_value('custom_different', dif);
+			frm.refresh_field('custom_different');
+		}
 	}
 })
 
