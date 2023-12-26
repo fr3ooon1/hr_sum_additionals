@@ -27,6 +27,8 @@
   "employment_type",
   "section_break_11",
   "related_perimmision_type",
+  "must_have_permission",
+  "number_of_permission",
   "had_condition",
   "condition",
   "log_type",
@@ -261,7 +263,7 @@
    "options": "Leave Type"
   },
   {
-   "description": "Hint: Write the field name in the Doctype or write the condition you would follow <br>\nEx. 1: different ( this is field name in the Permission )  \n<br>\nEx. 2: log_type == \"IN\" AND shift == \"ALL\"",
+   "description": "Type of Date : {YYYY-MM-DD} and Type of Time: {HH-MM-SS}",
    "fieldname": "condition",
    "fieldtype": "Table",
    "label": "Condition ",
@@ -272,10 +274,21 @@
    "fieldname": "had_condition",
    "fieldtype": "Check",
    "label": "Had Condition"
+  },
+  {
+   "default": "0",
+   "fieldname": "must_have_permission",
+   "fieldtype": "Check",
+   "label": "Must Have Permission"
+  },
+  {
+   "fieldname": "number_of_permission",
+   "fieldtype": "Float",
+   "label": "Number Of Permission"
   }
  ],
  "links": [],
- "modified": "2023-12-17 13:52:09.139789",
+ "modified": "2023-12-24 12:42:39.318224",
  "modified_by": "Administrator",
  "module": "Hr Sum Additionals",
  "name": "Penalties Rules",

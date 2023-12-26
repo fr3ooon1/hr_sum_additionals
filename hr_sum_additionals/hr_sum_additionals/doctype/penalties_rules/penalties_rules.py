@@ -39,8 +39,6 @@ def get_the_rule(employee_id, date, doctype, ref_docname):
             'related_perimmision_type': doctype , 
             'enable' : 1,
             })
-    
-
     for i in rules:
         rule = frappe.get_doc("Penalties Rules", i.name)
         if is_date_between(date, rule.from_date, rule.to_date):
@@ -50,23 +48,63 @@ def get_the_rule(employee_id, date, doctype, ref_docname):
                         if rule.employment_type == emp_employment_type or rule.employment_type is None or rule.employment_type == "":
                             if rule.employee_grade == emp_grade or rule.employee_grade is None or rule.employee_grade == "":
                                 if conditions(rule.name , doctype , ref_docname):
-                                    amount = the_function_to_amount(rule.name, employee_id , doctype , ref_docname)
-                                    employee_id = employee.name
-                                    salary_effects = rule.salary_component
-                                    rule_name = rule.name
-                                    related_permission_type = rule.related_perimmision_type
-                                    if rule.effect_on_salary == 1:
-                                        create_effected_salary(employee_id, salary_effects, amount, date, rule_name, related_permission_type, ref_docname)
-                                    if rule.update_leave == 1:
-                                        name_of_leave = frappe.db.get_value('Leave Allocation', {'employee_name': employee.employee_name , 'leave_type': rule.leave_type}, 'name')
-                                        value_of_leave = frappe.db.get_value('Leave Allocation', {'employee_name': employee.employee_name , 'leave_type': rule.leave_type}, 'new_leaves_allocated')
-                                        new_value_of_leave = float(value_of_leave) + amount
-                                        frappe.db.set_value('Leave Allocation', name_of_leave, 'new_leaves_allocated', new_value_of_leave)
-                                        frappe.db.set_value('Leave Allocation', name_of_leave, 'total_leaves_allocated', new_value_of_leave)
-                                    return amount
+                                    if must_have_permission(doctype ,ref_docname , rule.name , employee.employee_name): 
+                                        amount = the_function_to_amount(rule.name, employee_id , doctype , ref_docname , date)
+                                        employee_id = employee.name
+                                        salary_effects = rule.salary_component
+                                        rule_name = rule.name
+                                        related_permission_type = rule.related_perimmision_type
+                                        if rule.effect_on_salary == 1:
+                                            create_effected_salary(employee_id, salary_effects, amount, date, rule_name, related_permission_type, ref_docname)
+                                        if rule.update_leave == 1:
+                                            name_of_leave = frappe.db.get_value('Leave Allocation', {'employee_name': employee.employee_name , 'leave_type': rule.leave_type}, 'name')
+                                            value_of_leave = frappe.db.get_value('Leave Allocation', {'employee_name': employee.employee_name , 'leave_type': rule.leave_type}, 'new_leaves_allocated')
+                                            new_value_of_leave = float(value_of_leave) + amount
+                                            frappe.db.set_value('Leave Allocation', name_of_leave, 'new_leaves_allocated', new_value_of_leave)
+                                            frappe.db.set_value('Leave Allocation', name_of_leave, 'total_leaves_allocated', new_value_of_leave)
+                                        # return amount
+
+
+@frappe.whitelist()
+def must_have_permission(doctype , ref_docname , rule_name  , employee_name):
+        data_of_rule = frappe.get_doc("Penalties Rules" , rule_name)
+        
+        if data_of_rule.must_have_permission == 1 and doctype == 'Employee Checkin':
+            number_of_permission = data_of_rule.number_of_permission
+            counter = 0
+            data = frappe.get_doc(doctype , ref_docname)
+            time = data.time
+            date = getdate(time)
+            print(date)
+            get_permissions = frappe.db.get_list(doctype = "Permission" ,filters = {
+            'permission_type':['in', ['Late Enter', 'Travel' , 'Exit Early']], 
+            'employee_name' : employee_name , 
+            })
+            print(get_permissions)
+            for i in get_permissions:
+                one_permission = frappe.get_doc("Permission" , i.name)
+                counter = counter + float(diff_hours(one_permission.from_time , one_permission.to_time))
+            print(counter)
+            fr3o = frappe.db.get_list(doctype = "Permission" ,filters = {
+            'permission_type':['in', ['Late Enter', 'Travel' , 'Exit Early']], 
+            'employee_name' : employee_name , 
+            'date': date
+            })
+            if len(fr3o) != 0:
+                if counter <= number_of_permission:
+                    frappe.throw("Had Permission")
+                    return False
+                else:
+                    return True
+            else:
+                return True
+        else:
+            return True
 
 
 
+
+@frappe.whitelist()
 def is_valid_time(value):
     try:
         datetime.strptime(value, "%H:%M:%S")
@@ -74,6 +112,22 @@ def is_valid_time(value):
     except ValueError:
         return False
 
+from datetime import datetime
+@frappe.whitelist()
+def is_valid_date(value):
+    try:
+        datetime.strptime(value, "%Y-%m-%d")
+        return True
+    except ValueError:
+        return False
+    
+@frappe.whitelist()
+def convert_string_to_float(value):
+    if isinstance(value, str) and value.replace('.', '', 1).isdigit():
+        return float(value)
+    else:
+        return value
+    
 
 from datetime import timedelta
 @frappe.whitelist()
@@ -101,6 +155,13 @@ def conditions(name_of_rule, doctype, name):
                 minutes=time_object.minute,
                 seconds=time_object.second
             )
+        if is_valid_date(value):
+            date_object = datetime.strptime(value, "%Y-%m-%d")
+            i['value'] = date_object.date()
+        
+        i['value'] = convert_string_to_float(value)
+
+
     print(conditions)
 
     second_dict = {cond['field_name']: cond for cond in conditions}
@@ -130,46 +191,69 @@ def is_date_between(date_to_check, start_date, end_date):
     end_date = getdate(end_date)
     return start_date <= date_to_check <= end_date
 
-from frappe.utils import getdate , get_time
+def calculate_dif_time_and_date(futureDate1,timeNow):
+    futureDate = datetime.strptime(str(futureDate1), "%Y-%m-%d %H:%M:%S")
+    nowParts = datetime.strptime(str(timeNow), "%H:%M:%S").time()
+    nowDate = datetime(futureDate.year, futureDate.month, futureDate.day, int(nowParts.hour), int(nowParts.minute), int(nowParts.second))
+    timeDifference = (futureDate - nowDate)
+    totalAmount = (timeDifference.total_seconds() / 60) 
+    result = totalAmount / 60
+    print(result)
+    return result
+
+def calculate_dif_dateTime(futureDate1,timeNow):
+    futureDate = datetime.strptime(str(futureDate1), "%Y-%m-%d %H:%M:%S")
+    nowParts = datetime.strptime(str(timeNow), "%Y-%m-%d %H:%M:%S")
+    nowDate = datetime(futureDate.year, futureDate.month, futureDate.day, int(nowParts.hour), int(nowParts.minute), int(nowParts.second))
+    timeDifference = (futureDate - nowDate)
+    totalAmount = (timeDifference.total_seconds() / 60) 
+    result = totalAmount / 60
+    print(result)
+    return result
+
+from frappe.utils import getdate 
+from datetime import datetime, time
 @frappe.whitelist()
-def the_function_to_amount(name1, employee , doctype , ref_docname):
+def the_function_to_amount(name1, employee , doctype , ref_docname , date):
     try:
         amount = 0
         name = frappe.get_doc("Penalties Rules", name1)
-        if doctype == "Permission":
-            doc = frappe.get_doc("Permission" , ref_docname)
-            def_time = float(diff_hours(doc.from_time, doc.to_time))
-        elif doctype == "Employee Checkin":
-            doc = frappe.get_doc("Employee Checkin" , ref_docname)
-            if doc.log_type == "IN":
-                time = doc.time
-                time_checkIN = get_time(time)
-                shift_start = doc.shift_start
-                time_shift_start = get_time(shift_start)
-                def_time = float(diff_hours(time_checkIN, time_shift_start))
-        else:
-            def_time = frappe.db.get_value(doc, ref_docname, name.field_name)
+        def_time = frappe.db.get_value(doctype, ref_docname, name.field_name)
+        if def_time is None:
+            if doctype == "Permission":
+                doc = frappe.get_doc("Permission" , ref_docname)
+                def_time = float(diff_hours(doc.from_time, doc.to_time))
+            elif doctype == "Employee Checkin":
+                doc = frappe.get_doc("Employee Checkin" , ref_docname)
+                if doc.log_type == "IN":
+                    time_of_login = doc.time
+                    late_penalty_after = doc.late_penalty_after
+                    if_def_time = calculate_dif_time_and_date (time_of_login , late_penalty_after)
+                    if if_def_time > 0 and if_def_time < 4:
+                        def_time = calculate_dif_dateTime (time_of_login , doc.shift_start)
+                    elif if_def_time < 0:
+                        frappe.throw("Not Late")    
+                    elif if_def_time > 4:
+                        frappe.throw("Absent")            
+        print(def_time)
 
             
 
         if name.is_repeated == 1:
             if name.reptead_every == 'Month':
-                amount = the_rule_repeated(name1, def_time, len(get_history_penalties_data_monthly(employee, name.salary_component)))
+                amount = the_rule_repeated(name1, def_time, len(get_history_penalties_data_monthly(employee, name.salary_component , date)))
                 return amount
             elif name.reptead_every == 'Year':
-                amount = the_rule_repeated(name1, def_time, len(get_history_penalties_data_yearly(employee, name.salary_component)))
+                amount = the_rule_repeated(name1, def_time, len(get_history_penalties_data_yearly(employee, name.salary_component , date)))
                 return amount
             elif name.reptead_every == 'NEVER':
-                amount = the_rule_repeated(name1, def_time, len(get_history_penalties_data_all(employee, name.salary_component)))
+                amount = the_rule_repeated(name1, def_time, len(get_history_penalties_data_all(employee, name.salary_component , date)))
                 return amount
             elif name.reptead_every == 'Quarter':
-                amount = the_rule_repeated(name1, def_time, len(get_history_penalties_data_quarterly(employee, name.salary_component)))
+                amount = the_rule_repeated(name1, def_time, len(get_history_penalties_data_quarterly(employee, name.salary_component , date)))
                 return amount
         elif name.is_repeated == 0:
             amount = the_rule_simpled(name1, def_time)
-            print(def_time)
-            print(name1)
-            print(amount)
             return amount
     except Exception as e:
         print(f"An error occurred: {str(e)}")
@@ -262,7 +346,7 @@ def diff_hours(dt2, dt1):
 
 
 @frappe.whitelist()
-def get_history_penalties_data_monthly(employee, salary_component):
+def get_history_penalties_data_monthly(employee, salary_component , date):
     data = frappe.db.sql("""
         SELECT
             `employee` AS `employee`,
@@ -272,14 +356,45 @@ def get_history_penalties_data_monthly(employee, salary_component):
         WHERE
             `salary_component` = %s
             AND `employee` = %s
-            AND MONTH(`payroll_date`) = MONTH(CURRENT_DATE())
-            AND YEAR(`payroll_date`) = YEAR(CURRENT_DATE())
+            AND MONTH(`payroll_date`) = MONTH(%s)
+        
+     """, (salary_component, employee , date), as_dict=1)
+
+    return data
+
+@frappe.whitelist()
+def get_history_penalties_data_yearly(employee, salary_component , date ):
+    data = frappe.db.sql("""
+        SELECT
+            `employee` AS `employee`,
+            `salary_component` AS `component`
+        FROM
+            `tabEffected salaries`
+        WHERE
+            `salary_component` = %s
+            AND `employee` = %s
+            AND YEAR(`payroll_date`) = YEAR(%s)
+     """, (salary_component, employee , date), as_dict=1)
+
+    return data
+
+@frappe.whitelist()
+def get_history_penalties_data_all(employee, salary_component, date ):
+    data = frappe.db.sql("""
+        SELECT
+            `employee` AS `employee`,
+            `salary_component` AS `component`
+        FROM
+            `tabEffected salaries`
+        WHERE
+            `salary_component` = %s
+            AND `employee` = %s
      """, (salary_component, employee), as_dict=1)
 
     return data
 
 @frappe.whitelist()
-def get_history_penalties_data_yearly(employee='', salary_component=''):
+def get_history_penalties_data_quarterly(employee, salary_component , date ):
     data = frappe.db.sql("""
         SELECT
             `employee` AS `employee`,
@@ -289,39 +404,7 @@ def get_history_penalties_data_yearly(employee='', salary_component=''):
         WHERE
             `salary_component` = %s
             AND `employee` = %s
-            AND YEAR(`payroll_date`) = YEAR(CURRENT_DATE())
-     """, (salary_component, employee), as_dict=1)
-
-    return data
-
-@frappe.whitelist()
-def get_history_penalties_data_all(employee='', salary_component=''):
-    data = frappe.db.sql("""
-        SELECT
-            `employee` AS `employee`,
-            `salary_component` AS `component`
-        FROM
-            `tabEffected salaries`
-        WHERE
-            `salary_component` = %s
-            AND `employee` = %s
-     """, (salary_component, employee), as_dict=1)
-
-    return data
-
-@frappe.whitelist()
-def get_history_penalties_data_quarterly(employee='', salary_component=''):
-    data = frappe.db.sql("""
-        SELECT
-            `employee` AS `employee`,
-            `salary_component` AS `component`
-        FROM
-            `tabEffected salaries`
-        WHERE
-            `salary_component` = %s
-            AND `employee` = %s
-            AND QUARTER(`payroll_date`) = QUARTER(CURRENT_DATE())
-            AND YEAR(`payroll_date`) = YEAR(CURRENT_DATE())
-     """, (salary_component, employee), as_dict=1)
+            AND QUARTER(`payroll_date`) = QUARTER(%s)
+     """, (salary_component, employee , date), as_dict=1)
 
     return data

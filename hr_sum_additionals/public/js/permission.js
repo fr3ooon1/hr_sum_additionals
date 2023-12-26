@@ -3,16 +3,27 @@ frappe.ui.form.on('Permission', {
 		let employee = frm.doc.employee;
 		let date = frm.doc.date;
 		let doctype = frm.doctype;
-		let from_time = frm.doc.from_time;
-		let to_time = frm.doc.to_time;
 		let name = frm.doc.name;
-		let condition = "Different" ; 
 		let get_the_rule1 = get_the_rule (employee , date , doctype ,  name );
-
-
-		frm.set_value('custom_different', get_the_rule1);
 	}
 });
+
+
+frappe.ui.form.on('Permission', {
+    after_save: function(frm) {	
+		let from_time = frm.doc.from_time ; 
+		let to_time = frm.doc.to_time ; 
+		let dif = diff_hours(from_time , to_time )
+		frm.set_value('custom_different', dif);
+		frm.refresh_field('custom_different');
+	}
+})
+
+function diff_hours(dt2, dt1) {
+	var diff =(dt2.getTime() - dt1.getTime()) / 1000;
+	diff /= (60 * 60);
+	return Math.abs(diff);
+}
 
 function get_the_rule (employee , date , doctype , name){
 	var value ;
@@ -33,3 +44,25 @@ function get_the_rule (employee , date , doctype , name){
 	})
 	return value ;
 }
+
+
+// function gethistory (employee_name , permission_type , date){
+// 	frappe.call({
+// 		async: false,
+// 		method: 'frappe.client.get_list',
+// 		args: {
+// 		'doctype': 'Permission' ,
+// 		filters:{
+// 			'employee_name': employee_name,
+// 			'permission_type':permission_type , 
+// 			'date': ['between',['','']],
+// 		}
+		
+// 		 	},
+// 		callback: function (r) {
+// 			if (r) {
+// 				value = r.message ;
+// 			}
+// 		}
+// 	})
+// }

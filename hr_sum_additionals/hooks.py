@@ -18,7 +18,7 @@ override_doctype_class = {
 	# "ToDo": "custom_app.overrides.CustomToDo"
 	"Employee Checkin": "hr_sum_additionals.hr_sum_additionals.checkin.CustomCheckin",
     "Appraisal": "hr_sum_additionals.hr_sum_additionals.checkin.CustomAppraisal",
-
+    "Attendance": "hr_sum_additionals.hr_sum_additionals.checkin.CustomAttendance",
 }
 # include js, css files in header of web template
 # web_include_css = "/assets/hr_sum_additionals/css/hr_sum_additionals.css"
