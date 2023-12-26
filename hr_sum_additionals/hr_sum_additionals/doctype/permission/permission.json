@@ -1,19 +1,16 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2023-06-17 20:12:03.237248",
+ "creation": "2023-12-26 12:40:48.368494",
+ "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "section_break_1",
-  "test",
   "employee",
   "employee_name",
   "department",
-  "date_of_joining",
-  "shift",
-  "end_time",
   "column_break_5",
   "permission_type",
   "salary_component",
@@ -26,17 +23,13 @@
   "company",
   "approver",
   "status",
+  "amended_from",
   "amended_from"
  ],
  "fields": [
   {
    "fieldname": "section_break_1",
    "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "test",
-   "fieldtype": "Button",
-   "label": "test"
   },
   {
    "fieldname": "employee",
@@ -159,29 +152,19 @@
    "read_only": 1
   },
   {
-   "fetch_from": "employee.date_of_joining",
-   "fieldname": "date_of_joining",
-   "fieldtype": "Date",
-   "label": "Date of Joining"
-  },
-  {
-   "fetch_from": "employee.default_shift",
-   "fieldname": "shift",
+   "fieldname": "amended_from",
    "fieldtype": "Link",
-   "label": "Shift",
-   "options": "Shift Type"
-  },
-  {
-   "fetch_from": "shift.end_time",
-   "fieldname": "end_time",
-   "fieldtype": "Time",
-   "label": "End Time"
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Permission",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-24 00:12:54.300354",
+ "modified": "2023-12-26 12:40:48.368494",
  "modified_by": "Administrator",
  "module": "Hr Sum Additionals",
  "name": "Permission",

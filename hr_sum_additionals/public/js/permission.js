@@ -1,21 +1,22 @@
 frappe.ui.form.on('Permission', {
-    on_submit: function(frm) {	
-		let employee = frm.doc.employee;
-		let date = frm.doc.date;
-		let doctype = frm.doctype;
-		let name = frm.doc.name;
-		let get_the_rule1 = get_the_rule (employee , date , doctype ,  name );
+    after_save: function(frm) {	
+		let from_time = frm.doc.from_time ; 
+		let to_time = frm.doc.to_time ; 
+		let dif = diff_hours(from_time , to_time )
+		frm.set_value('custom_different', dif);
+		frm.refresh_field('custom_different');
 	}
 });
 
 
 frappe.ui.form.on('Permission', {
 	after_workflow_action: function(frm) {
-		if (frm.doc.workflow_state === 'Approved') {		let from_time = frm.doc.from_time ; 
-			let to_time = frm.doc.to_time ; 
-			let dif = diff_hours(from_time , to_time )
-			frm.set_value('custom_different', dif);
-			frm.refresh_field('custom_different');
+		if (frm.doc.workflow_state === 'Approved') {
+			let employee = frm.doc.employee;
+			let date = frm.doc.date;
+			let doctype = frm.doctype;
+			let name = frm.doc.name;
+			get_the_rule (employee , date , doctype ,  name );		
 		}
 	}
 })
@@ -47,23 +48,19 @@ function get_the_rule (employee , date , doctype , name){
 }
 
 
-// function gethistory (employee_name , permission_type , date){
-// 	frappe.call({
-// 		async: false,
-// 		method: 'frappe.client.get_list',
-// 		args: {
-// 		'doctype': 'Permission' ,
-// 		filters:{
-// 			'employee_name': employee_name,
-// 			'permission_type':permission_type , 
-// 			'date': ['between',['','']],
-// 		}
-		
-// 		 	},
-// 		callback: function (r) {
-// 			if (r) {
-// 				value = r.message ;
-// 			}
-// 		}
-// 	})
-// }
+frappe.ui.form.on('Permission', {
+    before_save: function(frm) {	
+		frappe.call({
+			async: false,
+			method: 'hr_sum_additionals.hr_sum_additionals.doctype.penalties_rules.penalties_rules.getmaximum',
+			args: {
+				name:frm.doc.name
+				 },
+			callback: function (r) {
+				if (r) {
+					frappe.validated = r.message ;
+				}
+			}
+		})
+	}
+});

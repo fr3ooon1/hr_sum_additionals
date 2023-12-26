@@ -408,3 +408,36 @@ def get_history_penalties_data_quarterly(employee, salary_component , date ):
      """, (salary_component, employee , date), as_dict=1)
 
     return data
+
+
+@frappe.whitelist()
+def getmaximum (name):
+    get_permission_data = frappe.get_doc("Permission" , name)
+    get_permission_type_data = frappe.get_doc("permission type components" , get_permission_data.permission_type )
+    value = get_permission_type_data.value
+    from_date = get_permission_type_data.from_date
+    to_date = get_permission_type_data.to_date
+    get_permissions = frappe.db.get_list("Permission" , filters = {
+            'employee_name':get_permission_data.employee_name,
+            'date':['between',[from_date,to_date]],
+            'permission_type':get_permission_data.permission_type,
+            'workflow_status':"Approved",
+            })
+    if get_permission_type_data.maximum == "Maximum Hours":
+        for i in get_permissions:
+            one_permission = frappe.get_doc("Permission" , i.name)
+            counter = counter + float(diff_hours(one_permission.from_time , one_permission.to_time))
+        counter = counter + float(diff_hours (get_permission_data.from_time , get_permission_data.to_time))
+        if counter > value:
+            return False
+        else:
+            return True
+        
+    elif get_permission_type_data.maximum == "Maximum Times":
+        number_of_permission = len(get_permissions)
+        if number_of_permission > value:
+            return False
+        else:
+            return True
+    elif get_permission_type_data.maximum is None or get_permission_type_data.maximum == '':
+        return True

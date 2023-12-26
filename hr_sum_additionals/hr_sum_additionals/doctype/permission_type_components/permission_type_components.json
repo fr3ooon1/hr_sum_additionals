@@ -1,13 +1,18 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2023-06-17 20:17:49.082648",
+ "creation": "2023-12-26 12:41:54.260268",
+ "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "permission_type",
   "salary_component",
+  "maximum",
+  "value",
+  "from_date",
+  "to_date",
   "amended_from"
  ],
  "fields": [
@@ -35,12 +40,42 @@
    "options": "permission type components",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "maximum",
+   "fieldtype": "Select",
+   "label": "Maximum",
+   "options": "\nMaximum Hours\nMaximum Times"
+  },
+  {
+   "fieldname": "value",
+   "fieldtype": "Float",
+   "label": "Value"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "permission type components",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date"
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-17 19:18:20.344954",
+ "modified": "2023-12-26 12:52:32.474518",
  "modified_by": "Administrator",
  "module": "Hr Sum Additionals",
  "name": "permission type components",
