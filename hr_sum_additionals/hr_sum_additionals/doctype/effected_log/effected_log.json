@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2023-09-06 13:18:47.284721",
+ "creation": "2024-04-24 00:36:57.077979",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -19,6 +19,7 @@
   "section_break_p4zwh",
   "create_additional_salary",
   "posting_date",
+  "amended_from",
   "amended_from"
  ],
  "fields": [
@@ -28,6 +29,12 @@
    "label": "From Date"
   },
   {
+   "fieldname": "salary_component",
+   "fieldtype": "Link",
+   "label": "Salary Component",
+   "options": "Salary Component"
+  },
+  {
    "fieldname": "section_break_3",
    "fieldtype": "Column Break"
   },
@@ -35,6 +42,19 @@
    "fieldname": "to_date",
    "fieldtype": "Date",
    "label": "To Date"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_7",
@@ -52,27 +72,6 @@
    "options": "Employee Effects"
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Effected log",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
-   "fieldname": "employee",
-   "fieldtype": "Link",
-   "label": "Employee",
-   "options": "Employee"
-  },
-  {
-   "fieldname": "salary_component",
-   "fieldtype": "Link",
-   "label": "Salary Component",
-   "options": "Salary Component"
-  },
-  {
    "fieldname": "section_break_p4zwh",
    "fieldtype": "Section Break"
   },
@@ -82,22 +81,34 @@
    "label": "Create Additional Salary"
   },
   {
-   "fetch_from": "employee.employee_name",
-   "fieldname": "employee_name",
-   "fieldtype": "Data",
-   "label": "Employee Name",
-   "read_only": 1
-  },
-  {
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "label": "Posting Date"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Effected log",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Effected log",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-24 12:33:32.023896",
+ "modified": "2024-04-24 00:36:57.077979",
  "modified_by": "Administrator",
  "module": "Hr Sum Additionals",
  "name": "Effected log",

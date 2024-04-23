@@ -1,4 +1,4 @@
-# Copyright (c) 2023, 1 and Contributors
+# Copyright (c) 2024, 1 and Contributors
 # See license.txt
 
 # import frappe
