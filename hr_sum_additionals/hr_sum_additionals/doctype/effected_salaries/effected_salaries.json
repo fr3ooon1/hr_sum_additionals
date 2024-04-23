@@ -31,8 +31,7 @@
   "ref_docname",
   "name_of_rule",
   "column_break_22",
-  "overwrite_salary_structure_amount",
-  "amended_from"
+  "overwrite_salary_structure_amount"
  ],
  "fields": [
   {
@@ -194,24 +193,6 @@
    "label": "Overwrite Salary Structure Amount"
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Employee Salaries Effect",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Employee Salaries Effect",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
    "fieldname": "name_of_rule",
    "fieldtype": "Link",
    "label": "Name Of Rule ",
@@ -221,7 +202,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-11 15:15:59.644119",
+ "modified": "2024-04-24 00:45:24.458490",
  "modified_by": "Administrator",
  "module": "Hr Sum Additionals",
  "name": "Effected salaries",
