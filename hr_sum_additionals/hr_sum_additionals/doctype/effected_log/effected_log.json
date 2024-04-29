@@ -19,7 +19,6 @@
   "section_break_p4zwh",
   "create_additional_salary",
   "posting_date",
-  "amended_from",
   "amended_from"
  ],
  "fields": [
@@ -84,15 +83,6 @@
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "label": "Posting Date"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Effected log",
-   "print_hide": 1,
-   "read_only": 1
   },
   {
    "fieldname": "amended_from",
